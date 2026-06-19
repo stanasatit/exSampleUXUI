@@ -1,6 +1,20 @@
 pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
 plugins { id("com.facebook.react.settings") }
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+
+def localProperties = new Properties()
+def localPropertiesFile = file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+def nodeExecutable = localProperties.getProperty("node.executable") ?: System.getenv("NODE_BINARY") ?: "node"
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+    ex.autolinkLibrariesFromCommand([
+        nodeExecutable,
+        file("../node_modules/@react-native-community/cli/build/bin.js").absolutePath,
+        "config"
+    ])
+}
 rootProject.name = 'exSample1'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
