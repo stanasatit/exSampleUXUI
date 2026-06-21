@@ -1,4 +1,4 @@
-package com.exsample1
+package com.exsample.evplusgo
 
 import android.app.Application
 import com.facebook.react.PackageList

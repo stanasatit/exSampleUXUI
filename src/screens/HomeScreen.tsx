@@ -35,7 +35,7 @@ export function HomeScreen({ onLogout }: HomeScreenProps) {
 
           <VStack space="sm">
             <Text variant="eyebrow">React Native Training</Text>
-            <Heading>exSample1</Heading>
+            <Heading>EVPlugGo</Heading>
             <Text tone="muted">
               Login flow is active. This screen is shown after a successful
               sign in.

@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window = UIWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
-      withModuleName: "exSample1",
+      withModuleName: "EVPlugGo",
       in: window,
       launchOptions: launchOptions
     )

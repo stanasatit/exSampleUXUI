@@ -15,6 +15,6 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
         "config"
     ])
 }
-rootProject.name = 'exSample1'
+rootProject.name = 'EVPlugGo'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
