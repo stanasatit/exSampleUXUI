@@ -6,8 +6,10 @@ import { colors, spacing } from '../../constants/theme';
 export type AppAlertDialogType = 'error' | 'info' | 'success' | 'warning';
 
 type AppAlertDialogProps = {
+  cancelText?: string;
   confirmText?: string;
   message: string;
+  onCancel?: () => void;
   onConfirm: () => void;
   title: string;
   type?: AppAlertDialogType;
@@ -60,8 +62,10 @@ const alertTypeConfig: Record<
 };
 
 export function AppAlertDialog({
+  cancelText = 'ยกเลิก',
   confirmText = 'ตกลง',
   message,
+  onCancel,
   onConfirm,
   title,
   type = 'info',
@@ -103,17 +107,30 @@ export function AppAlertDialog({
             </View>
           </View>
 
-          <Pressable
-            onPress={onConfirm}
-            style={({ pressed }) => [
-              styles.action,
-              { backgroundColor: config.buttonColor },
-              pressed && styles.actionPressed,
-              pressed && { backgroundColor: config.buttonPressedColor },
-            ]}
-          >
-            <Text style={styles.actionText}>{confirmText}</Text>
-          </Pressable>
+          <View style={styles.actionRow}>
+            {onCancel ? (
+              <Pressable
+                onPress={onCancel}
+                style={({ pressed }) => [
+                  styles.cancelAction,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Text style={styles.cancelActionText}>{cancelText}</Text>
+              </Pressable>
+            ) : null}
+
+            <Pressable
+              onPress={onConfirm}
+              style={({ pressed }) => [
+                styles.action,
+                { backgroundColor: config.buttonColor },
+                pressed && { backgroundColor: config.buttonPressedColor },
+              ]}
+            >
+              <Text style={styles.actionText}>{confirmText}</Text>
+            </Pressable>
+          </View>
         </GluestackAlert>
       </View>
     </Modal>
@@ -123,19 +140,39 @@ export function AppAlertDialog({
 const styles = StyleSheet.create({
   action: {
     alignItems: 'center',
-    alignSelf: 'stretch',
     borderRadius: 9,
+    flex: 1,
     flexDirection: 'row',
     gap: spacing.sm,
     justifyContent: 'center',
-    marginTop: spacing.xl,
     minHeight: 50,
     paddingHorizontal: spacing.md,
   },
-  actionPressed: {
+  actionRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.base,
+    marginTop: spacing.xl,
+    width: '100%',
   },
   actionText: {
     color: colors.white,
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  cancelAction: {
+    alignItems: 'center',
+    backgroundColor: colors.mutedSurface,
+    borderColor: colors.border,
+    borderRadius: 9,
+    borderWidth: 1,
+    flex: 1,
+    justifyContent: 'center',
+    minHeight: 50,
+    paddingHorizontal: spacing.md,
+  },
+  cancelActionText: {
+    color: colors.text,
     fontSize: 15,
     fontWeight: '800',
   },
@@ -182,6 +219,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 18,
     width: '100%',
+  },
+  pressed: {
+    opacity: 0.72,
   },
   title: {
     color: colors.text,

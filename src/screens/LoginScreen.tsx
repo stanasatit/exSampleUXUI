@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Image,
   ImageBackground,
   KeyboardAvoidingView,
@@ -12,12 +14,17 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Keychain from 'react-native-keychain';
 
-import { IconIonicons } from '../components/ui';
+import { AppAlertDialog, IconIonicons } from '../components/ui';
 import { colors } from '../constants/theme';
+import { setApiAccessToken, UserApi } from '../services/api';
+import type { UserLoginRequest, UserLoginResponse } from '../services/api';
 
 const backgroundImage = require('../../assets/images/background.png');
 const logoImage = require('../../assets/images/logo.png');
+const rememberLoginService = 'evpluggo.remember-login';
+const userApi = new UserApi();
 
 type LoginScreenProps = {
   onForgotPasswordPress: () => void;
@@ -33,13 +40,74 @@ export function LoginScreen({
   const insets = useSafeAreaInsets();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isRememberEnabled, setIsRememberEnabled] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
-  const handleLogin = () => {
-    const didLogin = onLogin({ password, username });
+  useEffect(() => {
+    let isMounted = true;
 
-    setError(didLogin ? '' : 'กรุณากรอกข้อมูลให้ครบถ้วน');
+    Keychain.getGenericPassword({ service: rememberLoginService })
+      .then(savedLogin => {
+        if (!isMounted || !savedLogin) {
+          return;
+        }
+
+        setUsername(savedLogin.password);
+        setIsRememberEnabled(true);
+      })
+      .catch(error => {
+        console.warn('Unable to load remembered login:', error);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleLogin = async () => {
+    const payload: UserLoginRequest = {
+      username: username.trim(),
+      password,
+    };
+
+    if (payload.username.length === 0 || payload.password.length === 0) {
+      setAlertMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setAlertMessage('');
+
+    try {
+      const response = await userApi.login(payload);
+
+      if (response.success === false) {
+        setAlertMessage(response.message ?? response.error ?? 'เข้าสู่ระบบไม่สำเร็จ');
+        return;
+      }
+
+      const token = getAccessToken(response);
+      if (token) {
+        setApiAccessToken(token);
+      }
+
+      if (isRememberEnabled) {
+        await Keychain.setGenericPassword('username', payload.username, {
+          accessible: Keychain.ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY,
+          service: rememberLoginService,
+        });
+      } else {
+        await Keychain.resetGenericPassword({ service: rememberLoginService });
+      }
+
+      onLogin(payload);
+    } catch (loginError) {
+      setAlertMessage(getLoginErrorMessage(loginError));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -91,7 +159,10 @@ export function LoginScreen({
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType="email-address"
-                onChangeText={setUsername}
+                onChangeText={value => {
+                  setUsername(value);
+                  setAlertMessage('');
+                }}
                 placeholder="อีเมล หรือ เบอร์โทรศัพท์"
                 placeholderTextColor="#9CA3AF"
                 style={styles.input}
@@ -102,7 +173,10 @@ export function LoginScreen({
             <View style={styles.inputShell}>
               <IconIonicons color={colors.muted} name="lock-closed-outline" size={21} />
               <TextInput
-                onChangeText={setPassword}
+                onChangeText={value => {
+                  setPassword(value);
+                  setAlertMessage('');
+                }}
                 placeholder="รหัสผ่าน"
                 placeholderTextColor="#9CA3AF"
                 secureTextEntry={!isPasswordVisible}
@@ -121,20 +195,41 @@ export function LoginScreen({
               </Pressable>
             </View>
 
-            <Pressable
-              onPress={onForgotPasswordPress}
-              style={({ pressed }) => [styles.forgotButton, pressed && styles.pressed]}
-            >
-              <Text style={styles.forgotText}>ลืมรหัสผ่าน?</Text>
-            </Pressable>
+            <View style={styles.accountOptionsRow}>
+              <Pressable
+                onPress={() => setIsRememberEnabled(value => !value)}
+                style={({ pressed }) => [styles.rememberRow, pressed && styles.pressed]}
+              >
+                <View style={[styles.checkbox, isRememberEnabled && styles.checkboxChecked]}>
+                  {isRememberEnabled ? (
+                    <IconIonicons color={colors.white} name="checkmark" size={16} />
+                  ) : null}
+                </View>
+                <Text style={styles.rememberText}>จดจำการเข้าใช้งาน</Text>
+              </Pressable>
 
-            {error.length > 0 ? <Text style={styles.errorText}>{error}</Text> : null}
+              <Pressable
+                onPress={onForgotPasswordPress}
+                style={({ pressed }) => [styles.forgotButton, pressed && styles.pressed]}
+              >
+                <Text style={styles.forgotText}>ลืมรหัสผ่าน?</Text>
+              </Pressable>
+            </View>
 
             <Pressable
+              disabled={isSubmitting}
               onPress={handleLogin}
-              style={({ pressed }) => [styles.loginButton, pressed && styles.primaryPressed]}
+              style={({ pressed }) => [
+                styles.loginButton,
+                pressed && styles.primaryPressed,
+                isSubmitting && styles.disabledButton,
+              ]}
             >
-              <Text style={styles.loginButtonText}>เข้าสู่ระบบ</Text>
+              {isSubmitting ? (
+                <ActivityIndicator color={colors.white} />
+              ) : (
+                <Text style={styles.loginButtonText}>เข้าสู่ระบบ</Text>
+              )}
             </Pressable>
 
             <View style={styles.dividerRow}>
@@ -164,12 +259,44 @@ export function LoginScreen({
             </View>
           </View>
         </ScrollView>
+
+        <AppAlertDialog
+          confirmText="ตกลง"
+          message={alertMessage}
+          onConfirm={() => setAlertMessage('')}
+          title="เข้าสู่ระบบไม่สำเร็จ"
+          type="warning"
+          visible={alertMessage.length > 0}
+        />
       </ImageBackground>
     </KeyboardAvoidingView>
   );
 }
 
+function getAccessToken(response: UserLoginResponse) {
+  return response.access_token ?? response.token ?? null;
+}
+
+function getLoginErrorMessage(error: unknown) {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as
+      | { error?: string; message?: string }
+      | undefined;
+
+    return data?.message ?? data?.error ?? 'ไม่สามารถเชื่อมต่อ API เข้าสู่ระบบได้';
+  }
+
+  return 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง';
+}
+
 const styles = StyleSheet.create({
+  accountOptionsRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    minHeight: 36,
+  },
   brandBlock: {
     alignItems: 'center',
     marginTop: 24,
@@ -202,17 +329,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  errorText: {
-    color: colors.danger,
-    fontSize: 12,
-    fontWeight: '600',
-    marginTop: 6,
-    textAlign: 'right',
+  checkbox: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.94)',
+    borderColor: '#DADDE2',
+    borderRadius: 6,
+    borderWidth: 1,
+    height: 22,
+    justifyContent: 'center',
+    width: 22,
+  },
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  disabledButton: {
+    opacity: 0.62,
   },
   forgotButton: {
-    alignSelf: 'flex-end',
-    marginTop: 8,
-    paddingVertical: 4,
+    paddingLeft: 10,
+    paddingVertical: 6,
   },
   forgotText: {
     color: colors.primary,
@@ -319,6 +455,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '800',
     marginBottom: 6,
+  },
+  rememberRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 9,
+    minHeight: 34,
+    paddingRight: 10,
+  },
+  rememberText: {
+    color: '#4B5563',
+    fontSize: 14,
+    fontWeight: '700',
   },
   signupLink: {
     color: colors.primary,

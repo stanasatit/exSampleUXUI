@@ -41,6 +41,13 @@ export type UserLoginRequest = {
   password: string;
 };
 
+export type UserLoginResponse = ApiResponse<{
+  access_token?: string;
+  refresh_token?: string;
+  token?: string;
+  user?: UserObject;
+}>;
+
 export type UserForgotPasswordRequest = {
   username: string;
 };

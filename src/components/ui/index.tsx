@@ -1,4 +1,5 @@
 export * from './AppAlertDialog';
+export * from './AppDatePicker';
 export * from './Box';
 export * from './Button';
 export * from './Card';

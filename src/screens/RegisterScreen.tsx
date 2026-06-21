@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconIonicons } from '../components/ui';
+import { AppAlertDialog, AppDatePicker, IconIonicons } from '../components/ui';
 import { colors } from '../constants/theme';
 import { UserApi } from '../services/api';
 import type { UserRegisterRequest } from '../services/api';
@@ -55,8 +55,10 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
   const [form, setForm] = useState(initialForm);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [errorAlertMessage, setErrorAlertMessage] = useState('');
   const [success, setSuccess] = useState('');
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
 
   const canSubmit = useMemo(
     () =>
@@ -72,7 +74,7 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
       ...current,
       [key]: value,
     }));
-    setError('');
+    setErrorAlertMessage('');
     setSuccess('');
   };
 
@@ -103,14 +105,19 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
     return '';
   };
 
-  const handleRegister = async () => {
+  const handleRegisterPress = () => {
     const validationMessage = validateForm();
 
     if (validationMessage.length > 0) {
-      setError(validationMessage);
+      setErrorAlertMessage(validationMessage);
       return;
     }
 
+    setSuccess('');
+    setIsConfirmVisible(true);
+  };
+
+  const handleRegister = async () => {
     const payload: UserRegisterRequest = {
       username: form.username.trim(),
       password: form.password,
@@ -121,21 +128,20 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
     };
 
     setIsSubmitting(true);
-    setError('');
+    setIsConfirmVisible(false);
     setSuccess('');
 
     try {
       const response = await userApi.register(payload);
 
       if (response.success === false) {
-        setError(response.message ?? response.error ?? 'สมัครสมาชิกไม่สำเร็จ');
+        setErrorAlertMessage(response.message ?? response.error ?? 'สมัครสมาชิกไม่สำเร็จ');
         return;
       }
 
-      setSuccess(response.message ?? 'สมัครสมาชิกสำเร็จ');
-      setTimeout(onRegistered, 700);
+      setSuccessAlertMessage(response.message ?? 'สมัครสมาชิกสำเร็จ');
     } catch (registerError) {
-      setError(getErrorMessage(registerError));
+      setErrorAlertMessage(getErrorMessage(registerError));
     } finally {
       setIsSubmitting(false);
     }
@@ -203,6 +209,7 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
                 placeholderTextColor="#9CA3AF"
                 style={styles.input}
                 value={form.username}
+                maxLength={30}
               />
             </View>
 
@@ -217,32 +224,30 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
                 placeholderTextColor="#9CA3AF"
                 style={styles.input}
                 value={form.email}
+                maxLength={50}
               />
             </View>
 
-            <View style={styles.twoColumnRow}>
-              <View style={[styles.inputShell, styles.halfInput]}>
-                <IconIonicons color={colors.muted} name="call-outline" size={20} />
-                <TextInput
-                  keyboardType="phone-pad"
-                  onChangeText={updateForm('phone')}
-                  placeholder="เบอร์โทร"
-                  placeholderTextColor="#9CA3AF"
-                  style={styles.input}
-                  value={form.phone}
-                />
-              </View>
-              <View style={[styles.inputShell, styles.halfInput]}>
-                <IconIonicons color={colors.muted} name="calendar-outline" size={20} />
-                <TextInput
-                  onChangeText={updateForm('birthday')}
-                  placeholder="YYYY-MM-DD"
-                  placeholderTextColor="#9CA3AF"
-                  style={styles.input}
-                  value={form.birthday}
-                />
-              </View>
+            <View style={[styles.inputShell, styles.halfInput]}>
+              <IconIonicons color={colors.muted} name="call-outline" size={20} />
+              <TextInput
+                keyboardType="phone-pad"
+                onChangeText={updateForm('phone')}
+                placeholder="เบอร์โทร"
+                placeholderTextColor="#9CA3AF"
+                style={styles.input}
+                value={form.phone}
+                maxLength={10}
+                inputMode="numeric"
+              />
             </View>
+            <AppDatePicker
+              maxDate={formatDateValue(new Date())}
+              onChange={updateForm('birthday')}
+              placeholder="วัน-เดือน-ปี"
+              value={form.birthday}
+              showTodayButton={false}
+            />
 
             <View style={styles.inputShell}>
               <IconIonicons color={colors.muted} name="chatbubble-ellipses-outline" size={21} />
@@ -254,6 +259,7 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
                 placeholderTextColor="#9CA3AF"
                 style={styles.input}
                 value={form.lineId}
+                maxLength={50}
               />
             </View>
 
@@ -266,6 +272,7 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
                 secureTextEntry={!isPasswordVisible}
                 style={styles.input}
                 value={form.password}
+                maxLength={10}
               />
               <Pressable
                 hitSlop={10}
@@ -280,7 +287,7 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
             </View>
 
             <View style={styles.inputShell}>
-              <IconIonicons color={colors.muted} name="shield-checkmark-outline" size={21} />
+              <IconIonicons color={colors.muted} name="lock-closed-outline" size={21} />
               <TextInput
                 onChangeText={updateForm('confirmPassword')}
                 placeholder="ยืนยันรหัสผ่าน"
@@ -288,15 +295,25 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
                 secureTextEntry={!isPasswordVisible}
                 style={styles.input}
                 value={form.confirmPassword}
+                maxLength={10}
               />
+              <Pressable
+                hitSlop={10}
+                onPress={() => setIsPasswordVisible(value => !value)}
+              >
+                <IconIonicons
+                  color={colors.text}
+                  name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+                  size={21}
+                />
+              </Pressable>
             </View>
 
-            {error.length > 0 ? <Text style={styles.errorText}>{error}</Text> : null}
             {success.length > 0 ? <Text style={styles.successText}>{success}</Text> : null}
 
             <Pressable
               disabled={!canSubmit}
-              onPress={handleRegister}
+              onPress={handleRegisterPress}
               style={({ pressed }) => [
                 styles.registerButton,
                 pressed && styles.primaryPressed,
@@ -321,6 +338,33 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
             </View>
           </View>
         </ScrollView>
+
+        <AppAlertDialog
+          confirmText="ตกลง"
+          message={errorAlertMessage}
+          onConfirm={() => setErrorAlertMessage('')}
+          title="สมัครสมาชิกไม่สำเร็จ"
+          type="warning"
+          visible={errorAlertMessage.length > 0}
+        />
+        <AppAlertDialog
+          cancelText="ยกเลิก"
+          confirmText="ยืนยัน"
+          message="กรุณาตรวจสอบข้อมูลให้ถูกต้องก่อนยืนยันการสมัครสมาชิก"
+          onCancel={() => setIsConfirmVisible(false)}
+          onConfirm={handleRegister}
+          title="ยืนยันสมัครสมาชิก"
+          type="info"
+          visible={isConfirmVisible}
+        />
+        <AppAlertDialog
+          confirmText="ตกลง"
+          message={successAlertMessage}
+          onConfirm={onRegistered}
+          title="สมัครสมาชิกสำเร็จ"
+          type="success"
+          visible={successAlertMessage.length > 0}
+        />
       </ImageBackground>
     </KeyboardAvoidingView>
   );
@@ -336,6 +380,14 @@ function getErrorMessage(error: unknown) {
   }
 
   return 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง';
+}
+
+function formatDateValue(date: Date) {
+  const year = date.getFullYear() + 543;
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${day}-${month}-${year}`;
 }
 
 const styles = StyleSheet.create({
@@ -357,13 +409,6 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.55,
-  },
-  errorText: {
-    color: colors.danger,
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 10,
-    textAlign: 'right',
   },
   formPanel: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',

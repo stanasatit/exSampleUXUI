@@ -46,6 +46,7 @@ import {
   UserListResponse,
   UserForgotPasswordRequest,
   UserLoginRequest,
+  UserLoginResponse,
   UserRefreshRequest,
   UserRegisterRequest,
   UserRegisterResponse,
@@ -93,7 +94,7 @@ export class UserApi {
   }
 
   login(data: UserLoginRequest, config?: ApiRequestConfig) {
-    return apiPost<ApiResponse, UserLoginRequest>('/user/login', data, config);
+    return apiPost<UserLoginResponse, UserLoginRequest>('/user/login', data, config);
   }
 
   forgotPassword(data: UserForgotPasswordRequest, config?: ApiRequestConfig) {
