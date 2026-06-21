@@ -20,6 +20,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = exSample1/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = exSample1/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = exSample1/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		2B7C2C412DD1A00100A00001 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		2B7C2C422DD1A00100A00002 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-exSample1.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-exSample1.debug.xcconfig"; path = "Target Support Files/Pods-exSample1/Pods-exSample1.debug.xcconfig"; sourceTree = "<group>"; };
 		4A7E6D9A2C8F4A58B1D0E123 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "exSample1/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4A7E6D9C2C8F4A58B1D0E123 /* exSample1.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = exSample1.entitlements; path = exSample1/exSample1.entitlements; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				13B07FAE1A68108700A75B9A /* exSample1 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
+				2B7C2C402DD1A00100A00000 /* Config */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 			);
@@ -92,6 +95,15 @@
 				13B07F961A680F5B00A75B9A /* EVPlugGo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2B7C2C402DD1A00100A00000 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				2B7C2C412DD1A00100A00001 /* Debug.xcconfig */,
+				2B7C2C422DD1A00100A00002 /* Release.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -275,7 +287,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-exSample1.debug.xcconfig */;
+			baseConfigurationReference = 2B7C2C412DD1A00100A00001 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -307,7 +319,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-exSample1.release.xcconfig */;
+			baseConfigurationReference = 2B7C2C422DD1A00100A00002 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

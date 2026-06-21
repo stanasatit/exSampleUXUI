@@ -1,0 +1,4 @@
+GOOGLE_MAPS_API_KEY =
+
+#include "../Pods/Target Support Files/Pods-exSample1/Pods-exSample1.debug.xcconfig"
+#include? "GoogleMaps.local.xcconfig"

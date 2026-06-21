@@ -5,11 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GluestackUIProvider } from './src/components/ui';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { SplashScreen } from './src/screens/SplashScreen';
-import {
-  initializeFirebaseMessaging,
-  subscribeToFirebaseMessages,
-} from './src/services/notifications/firebaseMessaging';
-import { getOrCreateDeviceUuid } from './src/services/device/deviceUuid';
+import { subscribeToFirebaseMessages } from './src/services/notifications/firebaseMessaging';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -20,18 +16,6 @@ function App() {
       setIsSplashVisible(false);
     }, 1400);
     const unsubscribeFirebaseMessages = subscribeToFirebaseMessages();
-
-    getOrCreateDeviceUuid()
-      .then(deviceUuid => {
-        console.log('Device UUID:', deviceUuid);
-      })
-      .catch(error => {
-        console.warn('Unable to initialize device UUID:', error);
-      });
-
-    initializeFirebaseMessaging().catch(error => {
-      console.warn('Unable to initialize Firebase messaging:', error);
-    });
 
     return () => {
       clearTimeout(timer);

@@ -1,12 +1,13 @@
 export type ApiId = number | string;
 
-export type ApiResponse<TData extends Record<string, unknown> = Record<string, unknown>> =
-  {
-    success?: boolean;
-    message?: string;
-    error?: string;
-    code?: string;
-  } & TData;
+export type ApiResponse<
+  TData extends Record<string, unknown> = Record<string, unknown>,
+> = {
+  success?: boolean;
+  message?: string;
+  error?: string;
+  code?: string;
+} & TData;
 
 export type UserObject = {
   id?: number;
@@ -201,6 +202,7 @@ export type DeviceTokenCreateRequest = {
 export type DeviceTokenUpdateRequest = {
   fcm_token?: string;
   platform?: DevicePlatform;
+  user_id?: number;
   username?: string;
 };
 
@@ -222,6 +224,12 @@ export type ChargingStationListQuery = {
   provider_code?: string;
   charge_type?: string;
   pricing_model?: string;
+};
+
+export type ChargingStationNearbyQuery = {
+  lat: number;
+  long: number;
+  radius?: number;
 };
 
 export type ChargingStationCreateRequest = {

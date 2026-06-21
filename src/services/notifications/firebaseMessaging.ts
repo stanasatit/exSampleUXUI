@@ -14,6 +14,13 @@ import {
 } from '@react-native-firebase/messaging';
 
 const messaging = getMessaging();
+let tokenRefreshHandler: ((token: string) => Promise<void> | void) | null = null;
+
+export function setFirebaseTokenRefreshHandler(
+  handler: ((token: string) => Promise<void> | void) | null,
+) {
+  tokenRefreshHandler = handler;
+}
 
 function isNotificationAuthorized(status: number) {
   return (
@@ -65,6 +72,10 @@ export function subscribeToFirebaseMessages() {
 
   const unsubscribeTokenRefresh = onTokenRefresh(messaging, token => {
     console.log('FCM token refreshed:', token);
+
+    Promise.resolve(tokenRefreshHandler?.(token)).catch(error => {
+      console.warn('Unable to handle refreshed FCM token:', error);
+    });
   });
 
   const unsubscribeOpenedApp = onNotificationOpenedApp(

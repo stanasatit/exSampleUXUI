@@ -20,6 +20,7 @@ import { AppAlertDialog, IconIonicons } from '../components/ui';
 import { colors } from '../constants/theme';
 import { setApiAccessToken, UserApi } from '../services/api';
 import type { UserLoginRequest, UserLoginResponse } from '../services/api';
+import { registerOrUpdateDeviceToken } from '../services/device/deviceTokenRegistration';
 
 const backgroundImage = require('../../assets/images/background.png');
 const logoImage = require('../../assets/images/logo.png');
@@ -100,6 +101,15 @@ export function LoginScreen({
         });
       } else {
         await Keychain.resetGenericPassword({ service: rememberLoginService });
+      }
+
+      try {
+        await registerOrUpdateDeviceToken({
+          userId: response.user?.id,
+          username: payload.username,
+        });
+      } catch (deviceTokenError) {
+        console.warn('Unable to register device token:', deviceTokenError);
       }
 
       onLogin(payload);

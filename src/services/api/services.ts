@@ -1,9 +1,4 @@
-import {
-  apiGet,
-  apiPost,
-  apiPut,
-  ApiRequestConfig,
-} from './client';
+import { apiGet, apiPost, apiPut, ApiRequestConfig } from './client';
 import {
   ApiId,
   ApiResponse,
@@ -25,6 +20,7 @@ import {
   ChargingSessionPaymentRequest,
   ChargingStationCreateRequest,
   ChargingStationListQuery,
+  ChargingStationNearbyQuery,
   ChargingStationUpdateRequest,
   DeviceTokenCreateRequest,
   DeviceTokenResponse,
@@ -94,7 +90,11 @@ export class UserApi {
   }
 
   login(data: UserLoginRequest, config?: ApiRequestConfig) {
-    return apiPost<UserLoginResponse, UserLoginRequest>('/user/login', data, config);
+    return apiPost<UserLoginResponse, UserLoginRequest>(
+      '/user/login',
+      data,
+      config,
+    );
   }
 
   forgotPassword(data: UserForgotPasswordRequest, config?: ApiRequestConfig) {
@@ -114,7 +114,11 @@ export class UserApi {
   }
 
   refresh(data: UserRefreshRequest, config?: ApiRequestConfig) {
-    return apiPost<ApiResponse, UserRefreshRequest>('/user/refresh', data, config);
+    return apiPost<ApiResponse, UserRefreshRequest>(
+      '/user/refresh',
+      data,
+      config,
+    );
   }
 
   getMe(config?: ApiRequestConfig) {
@@ -184,7 +188,11 @@ export class StationStatusApi {
     return apiGet<ApiResponse>(`/station-status/${encodePath(id)}`, config);
   }
 
-  update(id: ApiId, data: StationStatusUpdateRequest, config?: ApiRequestConfig) {
+  update(
+    id: ApiId,
+    data: StationStatusUpdateRequest,
+    config?: ApiRequestConfig,
+  ) {
     return apiPut<ApiResponse, StationStatusUpdateRequest>(
       `/station-status/${encodePath(id)}`,
       data,
@@ -221,7 +229,11 @@ export class PricingConfigApi {
     return apiGet<ApiResponse>(`/pricing-config/${encodePath(id)}`, config);
   }
 
-  update(id: ApiId, data: PricingConfigUpdateRequest, config?: ApiRequestConfig) {
+  update(
+    id: ApiId,
+    data: PricingConfigUpdateRequest,
+    config?: ApiRequestConfig,
+  ) {
     return apiPut<ApiResponse, PricingConfigUpdateRequest>(
       `/pricing-config/${encodePath(id)}`,
       data,
@@ -319,7 +331,11 @@ export class DeviceTokenApi {
     return apiGet<ApiResponse>('/device-token', config);
   }
 
-  update(uuid: string, data: DeviceTokenUpdateRequest, config?: ApiRequestConfig) {
+  update(
+    uuid: string,
+    data: DeviceTokenUpdateRequest,
+    config?: ApiRequestConfig,
+  ) {
     return apiPut<DeviceTokenResponse, DeviceTokenUpdateRequest>(
       `/device-token/${encodePath(uuid)}`,
       data,
@@ -334,8 +350,12 @@ export class DeviceTokenApi {
 
 export class ChargingStationApi {
   list(query?: ChargingStationListQuery, config?: ApiRequestConfig) {
+    return apiGet<ApiResponse>('/charging-station', withParams(query, config));
+  }
+
+  nearby(query: ChargingStationNearbyQuery, config?: ApiRequestConfig) {
     return apiGet<ApiResponse>(
-      '/charging-station',
+      '/charging-station/nearby',
       withParams(query, config),
     );
   }
@@ -443,7 +463,10 @@ export class ChargingFeeApi {
     );
   }
 
-  startSession(data: ChargingFeeSessionStartRequest, config?: ApiRequestConfig) {
+  startSession(
+    data: ChargingFeeSessionStartRequest,
+    config?: ApiRequestConfig,
+  ) {
     return apiPost<ApiResponse, ChargingFeeSessionStartRequest>(
       '/charging-fee/session/start',
       data,

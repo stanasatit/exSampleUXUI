@@ -1,5 +1,5 @@
 import { useState, type ComponentProps } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Screen } from '../components/Screen';
@@ -23,20 +23,32 @@ const tabs: TabItem[] = [
   { icon: 'home', key: 'home', label: 'หน้าหลัก' },
   { icon: 'calendar-outline', key: 'booking', label: 'รายการจอง' },
   { icon: 'location-sharp', key: 'map', label: 'แผนที่' },
-  { badge: 3, icon: 'notifications-outline', key: 'alerts', label: 'แจ้งเตือน' },
+  {
+    badge: 3,
+    icon: 'notifications-outline',
+    key: 'alerts',
+    label: 'แจ้งเตือน',
+  },
   { icon: 'person', key: 'profile', label: 'โปรไฟล์' },
 ];
 
 export function HomeScreen({ onLogout }: HomeScreenProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
+  const contentBottomPadding = Math.round(
+    Math.min(Math.max(height * 0.035, 20), 38),
+  );
 
   return (
     <Screen>
       <Box flex={1} style={styles.container}>
         <AppHeader onAlertsPress={() => setActiveTab('alerts')} />
 
-        <Box flex={1} style={styles.screenArea}>
+        <Box
+          flex={1}
+          style={[styles.screenArea, { paddingBottom: contentBottomPadding }]}
+        >
           <TabContent activeTab={activeTab} onLogout={onLogout} />
         </Box>
       </Box>
@@ -123,7 +135,7 @@ function BottomTabBar({
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: -2,
+    marginHorizontal: 0,
   },
   greetingSubtitle: {
     fontSize: 18,
@@ -144,15 +156,15 @@ const styles = StyleSheet.create({
   },
   logo: {
     color: '#13BE61',
-    fontSize: 31,
+    fontSize: 28,
     fontStyle: 'italic',
     fontWeight: '900',
     letterSpacing: 0,
-    lineHeight: 38,
+    lineHeight: 34,
   },
   logoAccent: {
     color: '#079E47',
-    fontSize: 28,
+    fontSize: 25,
     fontStyle: 'italic',
     fontWeight: '900',
   },
@@ -174,8 +186,8 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   screenArea: {
-    paddingBottom: 84,
-    paddingTop: 18,
+    paddingBottom: 0,
+    paddingTop: 12,
   },
   tabBadge: {
     alignItems: 'center',
@@ -199,12 +211,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     elevation: 10,
-    left: 1,
+    left: 0,
     paddingBottom: 32,
-    paddingHorizontal: 28,
+    paddingHorizontal: 14,
     paddingTop: 12,
     position: 'absolute',
-    right: 1,
+    right: 0,
     shadowColor: '#0F172A',
     shadowOffset: { height: -5, width: 0 },
     shadowOpacity: 0.09,
