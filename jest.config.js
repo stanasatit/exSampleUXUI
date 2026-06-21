@@ -1,6 +1,10 @@
 module.exports = {
   preset: '@react-native/jest-preset',
   moduleNameMapper: {
+    '^@react-native-firebase/app$':
+      '<rootDir>/__mocks__/@react-native-firebase/app.js',
+    '^@react-native-firebase/messaging$':
+      '<rootDir>/__mocks__/@react-native-firebase/messaging.js',
     '\\.(ttf)$': '<rootDir>/__mocks__/file-mock.js',
   },
   transform: {
