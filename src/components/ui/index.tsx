@@ -20,6 +20,7 @@ import {
 import { createButton } from '@gluestack-ui/core/lib/esm/button/creator/index.jsx';
 import { createInput } from '@gluestack-ui/core/lib/esm/input/creator/index.jsx';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
+import { FontAwesome6 } from '@react-native-vector-icons/fontawesome6';
 
 import { colors, spacing, typography } from '../../constants/theme';
 
@@ -291,14 +292,29 @@ export function ButtonIcon({ name }: ButtonIconProps) {
   );
 }
 
-type IconProps = {
+type IconIoniconsProps = {
   color?: string;
   name: IconName;
   size?: number;
 };
 
-export function Icon({ color = colors.text, name, size = 20 }: IconProps) {
+export function IconIonicons({ color = colors.text, name, size = 20 }: IconIoniconsProps) {
   return <Ionicons color={color} name={name} size={size} />;
+}
+
+export const Icon = IconIonicons;
+
+type IconFontAwesome6Props = {
+  color?: string;
+  size?: number;
+} & ComponentProps<typeof FontAwesome6>;
+
+export function IconFontAwesome6({
+  color = colors.text,
+  size = 20,
+  ...props
+}: IconFontAwesome6Props) {
+  return <FontAwesome6 color={color} size={size} {...props} />;
 }
 
 type InputProps = TextInputProps & {

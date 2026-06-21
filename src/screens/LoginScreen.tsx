@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Icon } from '../components/ui';
+import { IconIonicons } from '../components/ui';
 import { colors } from '../constants/theme';
 
 const backgroundImage = require('../../assets/images/background.png');
@@ -61,9 +61,9 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         >
           <View style={styles.languageRow}>
             <Pressable style={({ pressed }) => [styles.languageButton, pressed && styles.pressed]}>
-              <Icon color={colors.text} name="globe-outline" size={17} />
+              <IconIonicons color={colors.text} name="globe-outline" size={17} />
               <Text style={styles.languageText}>ไทย</Text>
-              <Icon color={colors.text} name="chevron-down" size={16} />
+              <IconIonicons color={colors.text} name="chevron-down" size={16} />
             </Pressable>
           </View>
 
@@ -80,7 +80,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             <Text style={styles.sectionTitle}>เข้าสู่ระบบ</Text>
 
             <View style={styles.inputShell}>
-              <Icon color={colors.muted} name="mail-outline" size={21} />
+              <IconIonicons color={colors.muted} name="mail-outline" size={21} />
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -94,7 +94,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             </View>
 
             <View style={styles.inputShell}>
-              <Icon color={colors.muted} name="lock-closed-outline" size={21} />
+              <IconIonicons color={colors.muted} name="lock-closed-outline" size={21} />
               <TextInput
                 onChangeText={setPassword}
                 placeholder="รหัสผ่าน"
@@ -107,7 +107,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                 hitSlop={10}
                 onPress={() => setIsPasswordVisible(value => !value)}
               >
-                <Icon
+                <IconIonicons
                   color={colors.text}
                   name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
                   size={21}
@@ -138,12 +138,12 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             </View>
 
             <Pressable style={({ pressed }) => [styles.socialButton, pressed && styles.pressed]}>
-              <Text style={styles.googleMark}>G</Text>
+              <IconIonicons color="#4285F4" name="logo-google" size={24} />
               <Text style={styles.socialText}>เข้าสู่ระบบด้วย Google</Text>
             </Pressable>
 
             <Pressable style={({ pressed }) => [styles.socialButton, pressed && styles.pressed]}>
-              <Icon color="#000000" name="logo-apple" size={24} />
+              <IconIonicons color="#000000" name="logo-apple" size={24} />
               <Text style={styles.socialText}>เข้าสู่ระบบด้วย Apple</Text>
             </Pressable>
 
