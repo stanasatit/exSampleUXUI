@@ -21,9 +21,10 @@ const logoImage = require('../../assets/images/logo.png');
 
 type LoginScreenProps = {
   onLogin: (credentials: { password: string; username: string }) => boolean;
+  onRegisterPress: () => void;
 };
 
-export function LoginScreen({ onLogin }: LoginScreenProps) {
+export function LoginScreen({ onLogin, onRegisterPress }: LoginScreenProps) {
   const insets = useSafeAreaInsets();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -59,13 +60,13 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.languageRow}>
+          {/* <View style={styles.languageRow}>
             <Pressable style={({ pressed }) => [styles.languageButton, pressed && styles.pressed]}>
               <IconIonicons color={colors.text} name="globe-outline" size={17} />
               <Text style={styles.languageText}>ไทย</Text>
               <IconIonicons color={colors.text} name="chevron-down" size={16} />
             </Pressable>
-          </View>
+          </View> */}
 
           <View style={styles.brandBlock}>
             <View style={styles.logoClip}>
@@ -149,7 +150,10 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 
             <View style={styles.signupRow}>
               <Text style={styles.signupMuted}>ยังไม่มีบัญชี?</Text>
-              <Pressable style={({ pressed }) => pressed && styles.pressed}>
+              <Pressable
+                onPress={onRegisterPress}
+                style={({ pressed }) => pressed && styles.pressed}
+              >
                 <Text style={styles.signupLink}> สร้างบัญชี</Text>
               </Pressable>
             </View>
@@ -163,7 +167,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
 const styles = StyleSheet.create({
   brandBlock: {
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 24,
   },
   backgroundWash: {
     backgroundColor: 'rgba(255, 255, 255, 0.56)',
