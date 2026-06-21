@@ -2,12 +2,15 @@ export const colors = {
   background: '#F8FBFA',
   border: '#D1D5DB',
   danger: '#DC2626',
+  info: '#0EA5E9',
   mutedSurface: '#EEF8F3',
   primary: '#16B968',
   primaryPressed: '#0F9F58',
+  success: '#16B968',
   surface: '#FFFFFF',
   text: '#0F172A',
   muted: '#4B5563',
+  warning: '#F97316',
   white: '#FFFFFF',
 };
 

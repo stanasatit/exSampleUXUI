@@ -44,10 +44,12 @@ import {
   TopicRequest,
   TopicResponse,
   UserListResponse,
+  UserForgotPasswordRequest,
   UserLoginRequest,
   UserRefreshRequest,
   UserRegisterRequest,
   UserRegisterResponse,
+  UserResetPasswordRequest,
   UserResponse,
   UserUpdateMeRequest,
   UserVehicleCreateRequest,
@@ -92,6 +94,22 @@ export class UserApi {
 
   login(data: UserLoginRequest, config?: ApiRequestConfig) {
     return apiPost<ApiResponse, UserLoginRequest>('/user/login', data, config);
+  }
+
+  forgotPassword(data: UserForgotPasswordRequest, config?: ApiRequestConfig) {
+    return apiPost<ApiResponse, UserForgotPasswordRequest>(
+      '/user/forgot-password',
+      data,
+      config,
+    );
+  }
+
+  resetPassword(data: UserResetPasswordRequest, config?: ApiRequestConfig) {
+    return apiPost<ApiResponse, UserResetPasswordRequest>(
+      '/user/reset-password',
+      data,
+      config,
+    );
   }
 
   refresh(data: UserRefreshRequest, config?: ApiRequestConfig) {

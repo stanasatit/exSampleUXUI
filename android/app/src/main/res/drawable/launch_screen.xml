@@ -5,9 +5,4 @@
             android:gravity="fill"
             android:src="@drawable/splashscreen" />
     </item>
-    <item android:top="138dp">
-        <bitmap
-            android:gravity="top|center_horizontal"
-            android:src="@drawable/splash_logo" />
-    </item>
 </layer-list>

@@ -21,12 +21,6 @@ export function SplashScreen() {
     >
       <View style={styles.brandBlock}>
         <Image resizeMode="contain" source={logoImage} style={styles.logo} />
-        <Text style={styles.title}>
-          <Text style={styles.titleGreen}>EV</Text>
-          <Text style={styles.titleDark}>Plug</Text>
-          <Text style={styles.titleGreen}>Go</Text>
-        </Text>
-        <Text style={styles.tagline}>Plug in. Charge up. Go farther.</Text>
       </View>
 
       <View style={styles.loader}>
@@ -43,7 +37,7 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
     right: 0,
-    top: '18%',
+    top: '24%',
   },
   container: {
     flex: 1,
@@ -60,26 +54,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   logo: {
-    height: 118,
-    width: 118,
-  },
-  tagline: {
-    color: '#374151',
-    fontSize: 16,
-    fontWeight: '600',
-    marginTop: 8,
-  },
-  title: {
-    fontSize: 41,
-    fontStyle: 'italic',
-    fontWeight: '900',
-    letterSpacing: 0,
-    marginTop: 8,
-  },
-  titleDark: {
-    color: '#10243D',
-  },
-  titleGreen: {
-    color: colors.primary,
+    height: 220,
+    width: 220,
   },
 });

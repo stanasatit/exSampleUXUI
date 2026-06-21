@@ -190,7 +190,7 @@ export function RegisterScreen({ onBackPress, onRegistered }: RegisterScreenProp
           <View style={styles.formPanel}>
             <Text style={styles.sectionTitle}>สมัครสมาชิก</Text>
             <Text style={styles.sectionDescription}>
-              กรอกข้อมูลบัญชีสำหรับจองสถานีชาร์จและจัดการรถ EV ของคุณ
+              กรอกข้อมูลบัญชีสำหรับจองสถานีชาร์จ
             </Text>
 
             <View style={styles.inputShell}>

@@ -20,11 +20,16 @@ const backgroundImage = require('../../assets/images/background.png');
 const logoImage = require('../../assets/images/logo.png');
 
 type LoginScreenProps = {
+  onForgotPasswordPress: () => void;
   onLogin: (credentials: { password: string; username: string }) => boolean;
   onRegisterPress: () => void;
 };
 
-export function LoginScreen({ onLogin, onRegisterPress }: LoginScreenProps) {
+export function LoginScreen({
+  onForgotPasswordPress,
+  onLogin,
+  onRegisterPress,
+}: LoginScreenProps) {
   const insets = useSafeAreaInsets();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -117,7 +122,7 @@ export function LoginScreen({ onLogin, onRegisterPress }: LoginScreenProps) {
             </View>
 
             <Pressable
-              onPress={handleLogin}
+              onPress={onForgotPasswordPress}
               style={({ pressed }) => [styles.forgotButton, pressed && styles.pressed]}
             >
               <Text style={styles.forgotText}>ลืมรหัสผ่าน?</Text>
