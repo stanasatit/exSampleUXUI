@@ -38,8 +38,8 @@ export function LoginScreen({
   onRegisterPress,
 }: LoginScreenProps) {
   const insets = useSafeAreaInsets();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('develop1');
+  const [password, setPassword] = useState('0123456789');
   const [isRememberEnabled, setIsRememberEnabled] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -163,7 +163,7 @@ export function LoginScreen({
                   setUsername(value);
                   setAlertMessage('');
                 }}
-                placeholder="อีเมล หรือ เบอร์โทรศัพท์"
+                placeholder="ชื่อผู้ใช้"
                 placeholderTextColor="#9CA3AF"
                 style={styles.input}
                 value={username}
