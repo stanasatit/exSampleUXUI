@@ -339,7 +339,7 @@ export type BookingCreateRequest = {
   booking_date?: string;
   start_time?: string;
   end_time?: string;
-  status_id?: number;
+  booking_type?: 'SCHEDULED' | 'WALKIN' | string;
   note?: string;
   username?: string;
 };

@@ -11,6 +11,7 @@ import { IconIonicons } from './Icon';
 import { colors, spacing } from '../../constants/theme';
 
 type AppDatePickerProps = {
+  disabled?: boolean;
   maxDate?: string;
   minDate?: string;
   onChange: (value: string) => void;
@@ -54,6 +55,7 @@ const monthAbbreviations = [
 const weekdayLabels = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
 
 export function AppDatePicker({
+  disabled = false,
   maxDate,
   minDate,
   onChange,
@@ -77,6 +79,8 @@ export function AppDatePicker({
   const calendarDays = useMemo(() => getCalendarDays(visibleMonth), [visibleMonth]);
 
   const handleOpen = () => {
+    if (disabled) return;
+
     const nextDate = parseDateValue(value) ?? new Date();
     setVisibleMonth(new Date(nextDate.getFullYear(), nextDate.getMonth(), 1));
     setYearPageStart(getYearPageStart(nextDate.getFullYear()));
@@ -96,14 +100,21 @@ export function AppDatePicker({
   return (
     <>
       <Pressable
+        disabled={disabled}
         onPress={handleOpen}
-        style={({ pressed }) => [styles.inputShell, pressed && styles.pressed]}
+        style={({ pressed }) => [
+          styles.inputShell,
+          disabled && styles.disabledShell,
+          pressed && styles.pressed,
+        ]}
       >
         <IconIonicons color={colors.muted} name="calendar-outline" size={20} />
         <Text style={[styles.inputText, !value && styles.placeholderText]}>
           {value || placeholder}
         </Text>
-        <IconIonicons color={colors.muted} name="chevron-down" size={18} />
+        {disabled ? null : (
+          <IconIonicons color={colors.muted} name="chevron-down" size={18} />
+        )}
       </Pressable>
 
       <Modal
@@ -482,6 +493,10 @@ const styles = StyleSheet.create({
   disabledDayText: {
     color: colors.muted,
   },
+  disabledShell: {
+    backgroundColor: '#F8FAFC',
+    opacity: 0.72,
+  },
   footerRow: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -512,7 +527,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     minHeight: 52,
-    marginTop: 12,
     paddingHorizontal: 14,
   },
   inputText: {

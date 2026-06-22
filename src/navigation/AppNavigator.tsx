@@ -12,14 +12,14 @@ import type { RootStackParamList } from '../types/navigation';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function AppNavigator() {
-  const { isLoggedIn, login, logout } = useAuth();
+  const { isLoggedIn, login, logout, userId, username } = useAuth();
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isLoggedIn ? (
           <Stack.Screen name="Home">
-            {() => <HomeScreen onLogout={logout} />}
+            {() => <HomeScreen onLogout={logout} userId={userId} username={username} />}
           </Stack.Screen>
         ) : (
           <>

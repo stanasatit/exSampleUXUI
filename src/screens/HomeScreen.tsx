@@ -10,6 +10,8 @@ import type { TabKey } from './tabs/types';
 
 type HomeScreenProps = {
   onLogout: () => void;
+  userId?: number;
+  username?: string;
 };
 
 type TabItem = {
@@ -32,7 +34,7 @@ const tabs: TabItem[] = [
   { icon: 'person', key: 'profile', label: 'โปรไฟล์' },
 ];
 
-export function HomeScreen({ onLogout }: HomeScreenProps) {
+export function HomeScreen({ onLogout, userId, username }: HomeScreenProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
@@ -44,12 +46,17 @@ export function HomeScreen({ onLogout }: HomeScreenProps) {
     <Screen>
       <Box flex={1} style={styles.container}>
         <AppHeader onAlertsPress={() => setActiveTab('alerts')} />
-
         <Box
           flex={1}
           style={[styles.screenArea, { paddingBottom: contentBottomPadding }]}
         >
-          <TabContent activeTab={activeTab} onLogout={onLogout} />
+          <TabContent
+            activeTab={activeTab}
+            onLogout={onLogout}
+            onTabPress={setActiveTab}
+            userId={userId}
+            username={username}
+          />
         </Box>
       </Box>
       <BottomTabBar
@@ -64,7 +71,7 @@ export function HomeScreen({ onLogout }: HomeScreenProps) {
 
 function AppHeader({ onAlertsPress }: { onAlertsPress: () => void }) {
   return (
-    <VStack space="lg">
+    <VStack space="lg" style={{ paddingHorizontal: spacing.sm }}>
       <HStack alignItems="center" justifyContent="space-between">
         <View style={styles.headerSpacer} />
         <Text style={styles.logo}>

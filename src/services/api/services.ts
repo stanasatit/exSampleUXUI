@@ -1,4 +1,4 @@
-import { apiGet, apiPost, apiPut, ApiRequestConfig } from './client';
+import { apiDelete, apiGet, apiPost, apiPut, ApiRequestConfig } from './client';
 import {
   ApiId,
   ApiResponse,
@@ -168,6 +168,10 @@ export class UserVehicleApi {
       data,
       config,
     );
+  }
+
+  delete(id: ApiId, config?: ApiRequestConfig) {
+    return apiDelete<ApiResponse>(`/user-vehicle/${encodePath(id)}`, config);
   }
 }
 
@@ -560,9 +564,16 @@ export class BookingApi {
   }
 }
 
+export class BookingStatusApi {
+  list(config?: ApiRequestConfig) {
+    return apiGet<ApiResponse>('/booking-status', config);
+  }
+}
+
 export const healthApi = new HealthApi();
 export const userApi = new UserApi();
 export const userVehicleApi = new UserVehicleApi();
+export const bookingStatusApi = new BookingStatusApi();
 export const stationStatusApi = new StationStatusApi();
 export const pricingConfigApi = new PricingConfigApi();
 export const notificationApi = new NotificationApi();

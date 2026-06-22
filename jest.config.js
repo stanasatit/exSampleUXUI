@@ -5,6 +5,8 @@ module.exports = {
       '<rootDir>/__mocks__/@react-native-firebase/app.js',
     '^@react-native-firebase/messaging$':
       '<rootDir>/__mocks__/@react-native-firebase/messaging.js',
+    '^@react-native-community/geolocation$':
+      '<rootDir>/__mocks__/@react-native-community/geolocation.js',
     '^react-native-get-random-values$':
       '<rootDir>/__mocks__/react-native-get-random-values.js',
     '^react-native-keychain$': '<rootDir>/__mocks__/react-native-keychain.js',

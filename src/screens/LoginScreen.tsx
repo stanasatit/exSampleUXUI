@@ -29,7 +29,7 @@ const userApi = new UserApi();
 
 type LoginScreenProps = {
   onForgotPasswordPress: () => void;
-  onLogin: (credentials: { password: string; username: string }) => boolean;
+  onLogin: (credentials: { password: string; userId?: number; username: string }) => boolean;
   onRegisterPress: () => void;
 };
 
@@ -112,7 +112,7 @@ export function LoginScreen({
         console.warn('Unable to register device token:', deviceTokenError);
       }
 
-      onLogin(payload);
+      onLogin({ ...payload, userId: response.user?.id });
     } catch (loginError) {
       setAlertMessage(getLoginErrorMessage(loginError));
     } finally {
