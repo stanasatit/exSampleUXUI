@@ -24,7 +24,7 @@ export function TabContent({
     case 'booking':
       return <BookingTabScreen userId={userId} username={username} />;
     case 'map':
-      return <MapTabScreen />;
+      return <MapTabScreen userId={userId} username={username} />;
     case 'alerts':
       return <AlertsTabScreen />;
     case 'profile':

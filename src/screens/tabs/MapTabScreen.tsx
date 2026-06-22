@@ -17,6 +17,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { Icon, Text, HStack, VStack } from '../../components/ui';
 import { colors } from '../../constants/theme';
 import { ChargingStationApi } from '../../services/api';
+import { AddBookingModal, type EditableBooking } from '../AddBookingModal';
 
 type StatusTone = 'available' | 'busy' | 'offline' | 'neutral';
 
@@ -41,6 +42,11 @@ type MapStation = {
 
 type FilterKey = 'all' | 'DC' | 'AC' | 'CCS2' | 'CHAdeMO' | 'available';
 
+type MapTabScreenProps = {
+  userId?: number;
+  username?: string;
+};
+
 const DEFAULT_REGION: Region = {
   latitude: 13.7563,
   latitudeDelta: 0.08,
@@ -59,8 +65,9 @@ const FILTERS: { key: FilterKey; label: string }[] = [
 
 const chargingStationApi = new ChargingStationApi();
 
-export function MapTabScreen() {
+export function MapTabScreen({ userId, username }: MapTabScreenProps) {
   const mapRef = useRef<MapView>(null);
+  const [bookingDraft, setBookingDraft] = useState<EditableBooking | null>(null);
   const [stations, setStations] = useState<MapStation[]>([]);
   const [isMapReady, setIsMapReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -293,9 +300,24 @@ export function MapTabScreen() {
       {selectedStation ? (
         <StationCard
           onClose={() => setSelectedStation(null)}
+          onBook={station => {
+            setBookingDraft(toBookingDraft(station));
+            setSelectedStation(null);
+          }}
           station={selectedStation}
         />
       ) : null}
+
+      <AddBookingModal
+        initialBooking={bookingDraft}
+        onClose={() => setBookingDraft(null)}
+        onSuccess={() => {
+          setBookingDraft(null);
+        }}
+        userId={userId}
+        username={username}
+        visible={Boolean(bookingDraft)}
+      />
     </View>
   );
 }
@@ -332,9 +354,11 @@ function StationMarker({
 
 function StationCard({
   onClose,
+  onBook,
   station,
 }: {
   onClose: () => void;
+  onBook: (station: MapStation) => void;
   station: MapStation;
 }) {
   const primaryPowerLabel = buildPrimaryPowerLabel(station);
@@ -393,12 +417,26 @@ function StationCard({
           </VStack>
         </HStack>
 
-        <Pressable style={styles.bookBtn}>
+        <Pressable onPress={() => onBook(station)} style={styles.bookBtn}>
           <Text style={styles.bookBtnText}>จองตอนนี้</Text>
         </Pressable>
       </Pressable>
     </Pressable>
   );
+}
+
+function toBookingDraft(station: MapStation): EditableBooking {
+  return {
+    id: 0,
+    stationAddress: station.address,
+    stationId:
+      typeof station.id === 'number'
+        ? station.id
+        : Number.isFinite(Number(station.id))
+          ? Number(station.id)
+          : undefined,
+    stationName: station.name,
+  };
 }
 
 function StationThumb({ imageUrl }: { imageUrl?: string }) {

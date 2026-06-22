@@ -496,8 +496,9 @@ export function AddBookingModal({
   visible,
 }: AddBookingModalProps) {
   const insets = useSafeAreaInsets();
-  const isEditMode = Boolean(initialBooking);
+  const isEditMode = Boolean(initialBooking && initialBooking.id > 0);
   const isCancelledBooking =
+    isEditMode &&
     initialBooking?.bookingType?.trim().toUpperCase() ===
     BOOKING_STATUS_CANCELLED;
 
